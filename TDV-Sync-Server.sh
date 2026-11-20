@@ -63,14 +63,15 @@ fi
 # --- Manifeste ----------------------------------------------------------------------------------------------------
 tmp="$(mktemp -d)" || die "mktemp"
 trap 'rm -rf "$tmp"' EXIT
-fetch "$MANIFEST_URL" "$tmp/manifest.json" || die "manifeste introuvable : $MANIFEST_URL" 4
+fetch "$MANIFEST_URL" "$tmp/manifest.raw" || die "manifeste introuvable : $MANIFEST_URL" 4
+tr -d '\r' < "$tmp/manifest.raw" > "$tmp/manifest.json"  # le manifeste est ecrit sous Windows (fins de ligne CRLF)
 version="$(sed -n 's/^  "version": "\(.*\)",$/\1/p' "$tmp/manifest.json" | head -n1)"
 echo "Version publiee : ${version:-?}"
 
 # Une ligne par fichier du groupe mods : chemin, taille, sha256, url, sha256 du .gz (manifeste ecrit par hd_pack decouper,
 # une propriete par ligne).
 awk '
-    function val(line) { sub(/^[^:]*: */, "", line); sub(/,$/, "", line); gsub(/^"|"$/, "", line); return line }
+    function val(line) { gsub(/\r/, "", line); sub(/^[^:]*: */, "", line); sub(/, *$/, "", line); gsub(/^"|"$/, "", line); return line }
     /"files": \[/ { infiles = 1 } /"delete": \[/ { infiles = 0 }
     infiles && /"path":/ { path = val($0); grp = ""; size = ""; sha = ""; url = "" }
     infiles && /"group":/ { grp = val($0) }
