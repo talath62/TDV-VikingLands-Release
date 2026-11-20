@@ -88,6 +88,7 @@ backup="$root/BepInEx/tdv-sync-backup/$(date +%Y%m%d-%H%M%S)"
 updated=0; uptodate=0; failed=0
 while IFS=$'\t' read -r path size sha url gzsha; do
     case "$path" in BepInEx/plugins/*) ;; *) echo "  ignore (hors plugins) : $path"; continue ;; esac
+    case "$path" in */VikingLands.HD.dll) continue ;; esac  # mod client (textures HD), inutile sur le serveur
     name="${path#BepInEx/plugins/}"
     dest="$plugins/$name"
     if [ -f "$dest" ] && [ "$(stat -c %s "$dest")" = "$size" ] && [ "$(sha256sum "$dest" | cut -d' ' -f1)" = "$sha" ]; then
