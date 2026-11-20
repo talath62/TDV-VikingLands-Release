@@ -13,6 +13,18 @@ les 8 DLL `BepInEx/plugins/VikingLands.*.dll` et les donnees `BepInEx/plugins/Vi
 environ 3,9 Go a telecharger la premiere fois). Chaque fichier telecharge est verifie avant de remplacer l'ancien.
 Le mode HD reste desactive dans le jeu tant que le joueur ne coche pas « Mode HD » dans Parametres > Graphismes.
 
+## Serveur Linux : TDV-Sync-Server.sh
+
+Met a jour seulement les 7 DLL serveur (groupe `mods` du manifeste) : ni la DLL HD ni les packs HD. Serveur arrete :
+
+```bash
+curl -fLO https://github.com/talath62/TDV-VikingLands-HD/releases/latest/download/TDV-Sync-Server.sh
+bash TDV-Sync-Server.sh /chemin/vers/BepInEx/plugins
+```
+
+Sans argument, le script prend `./BepInEx/plugins` ou l'unique instance AMP qui contient `VikingLands.Core.dll`. Les
+DLL remplacees sont gardees dans `BepInEx/tdv-sync-backup/<date>/`.
+
 ## Manifeste
 
 `https://github.com/talath62/TDV-VikingLands-HD/releases/latest/download/tdv-manifest.json`
